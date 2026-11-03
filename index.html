@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sales Agent — AI-Powered Outbound Outreach</title>
+  <meta name="description" content="Automate outbound customer outreach through AI voice calls and messaging. Qualify leads, book meetings, and follow up — 24/7." />
+
+  <!-- Fonts: Geist (body) + Inter (fallback) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS
+       - Background:   #FAFAF8 (light) / #0D0D0D (dark)
+       - Text:         #111111 (light) / #EDEDED (dark)
+       - Accent:       #5B6AF0  (muted indigo)
+       - Border:       rgba(0,0,0,0.08) / rgba(255,255,255,0.08)
+       - Radius:       14px standard, 8px small, 999px pill
+       - Spacing scale: 8 / 16 / 24 / 32 / 48 / 64 / 96 / 128 / 160px
+       - Font: Inter (body), tighter tracking on headings
+    ============================================================ */
+
+    :root {
+      --bg:         #FAFAF8;
+      --bg-card:    #FFFFFF;
+      --text:       #111111;
+      --text-muted: #6B6B6B;
+      --accent:     #5B6AF0;
+      --accent-dim: rgba(91, 106, 240, 0.12);
+      --border:     rgba(0, 0, 0, 0.08);
+      --radius:     14px;
+      --radius-sm:  8px;
+      --shadow:     0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+      --transition: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+      --font:       'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    [data-theme="dark"] {
+      --bg:         #0D0D0D;
+      --bg-card:    #161616;
+      --text:       #EDEDED;
+      --text-muted: #888888;
+      --border:     rgba(255, 255, 255, 0.08);
+      --shadow:     0 1px 4px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background var(--transition), color var(--transition);
+    }
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button, input { font-family: inherit; }
+    ul { list-style: none; }
+
+    /* ── Layout helpers ── */
+    .container {
+      width: 100%;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .section { padding: 112px 0; }
+    .section--tight { padding: 80px 0; }
+
+    /* ── Typography ── */
+    .display {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+    }
+    .h2 {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+    }
+    .h3 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
+    .body-lg { font-size: 1.125rem; line-height: 1.7; }
+    .body { font-size: 1rem; line-height: 1.65; }
+    .small { font-size: 0.875rem; }
+    .muted { color: var(--text-muted); }
+    .center { text-align: center; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: 999px;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: opacity var(--transition), transform var(--transition), background var(--transition);
+      white-space: nowrap;
+    }
+    .btn:hover { opacity: 0.86; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    [data-theme="dark"] .btn-secondary { border-color: rgba(255,255,255,0.14); }
+
+    /* ── Card ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.06); }
+
+    /* ──────────────────────────────────────────────
+       NAV
+    ────────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 16px 0;
+      transition: background var(--transition), backdrop-filter var(--transition), border-color var(--transition);
+    }
+    .nav.scrolled {
+      background: rgba(250, 250, 248, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    [data-theme="dark"] .nav.scrolled { background: rgba(13, 13, 13, 0.82); }
+    .nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .nav__logo {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav__logo-dot {
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+    .nav__links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+    .nav__links a {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: color var(--transition);
+    }
+    .nav__links a:hover { color: var(--text); }
+    .nav__right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      width: 36px; height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: color var(--transition), border-color var(--transition);
+      font-size: 1rem;
+    }
+    .theme-toggle:hover { color: var(--text); }
+    .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .nav__mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text);
+      padding: 4px;
+    }
+    @media (max-width: 768px) {
+      .nav__links { display: none; }
+      .nav__mobile-toggle { display: block; }
+    }
+
+    /* ──────────────────────────────────────────────
+       HERO
+    ────────────────────────────────────────────── */
+    .hero {
+      padding-top: 160px;
+      padding-bottom: 112px;
+    }
+    .hero__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .hero__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+    .hero__eyebrow-dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+    .hero__headline { margin-bottom: 20px; }
+    .hero__sub {
+      color: var(--text-muted);
+      max-width: 440px;
+      margin-bottom: 36px;
+    }
+    .hero__ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* ── Chat mockup ── */
+    .hero__mockup {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .chat-bubble {
+      padding: 14px 18px;
+      border-radius: 16px;
+      font-size: 0.9rem;
+      max-width: 88%;
+      line-height: 1.5;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: bubbleIn 0.5s forwards;
+    }
+    .chat-bubble--agent {
+      background: var(--accent);
+      color: #fff;
+      border-bottom-left-radius: 4px;
+      align-self: flex-start;
+    }
+    .chat-bubble--user {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-bottom-right-radius: 4px;
+      align-self: flex-end;
+    }
+    .chat-bubble:nth-child(1) { animation-delay: 0.3s; }
+    .chat-bubble:nth-child(2) { animation-delay: 1.2s; }
+    .chat-bubble:nth-child(3) { animation-delay: 2.1s; }
+    .chat-bubble:nth-child(4) { animation-delay: 3.0s; }
+    .chat-bubble:nth-child(5) { animation-delay: 3.9s; }
+    @keyframes bubbleIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Waveform bar */
+    .waveform {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 28px;
+    }
+    .waveform__bar {
+      width: 3px;
+      border-radius: 2px;
+      background: var(--accent);
+      animation: wave 1.2s ease-in-out infinite;
+    }
+    .waveform__bar:nth-child(1) { animation-delay: 0.0s; height: 60%; }
+    .waveform__bar:nth-child(2) { animation-delay: 0.1s; height: 100%; }
+    .waveform__bar:nth-child(3) { animation-delay: 0.2s; height: 45%; }
+    .waveform__bar:nth-child(4) { animation-delay: 0.3s; height: 80%; }
+    .waveform__bar:nth-child(5) { animation-delay: 0.4s; height: 55%; }
+    .waveform__bar:nth-child(6) { animation-delay: 0.5s; height: 90%; }
+    .waveform__bar:nth-child(7) { animation-delay: 0.6s; height: 40%; }
+    .waveform__bar:nth-child(8) { animation-delay: 0.7s; height: 70%; }
+    @keyframes wave {
+      0%, 100% { transform: scaleY(0.5); opacity: 0.6; }
+      50% { transform: scaleY(1); opacity: 1; }
+    }
+
+    .chat-call-indicator {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      align-self: flex-start;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 900px) {
+      .hero__inner { grid-template-columns: 1fr; gap: 48px; }
+      .hero__mockup { max-width: 380px; }
+    }
+    @media (max-width: 600px) {
+      .hero { padding-top: 120px; }
+    }
+
+    /* ──────────────────────────────────────────────
+       SOCIAL PROOF STRIP
+    ────────────────────────────────────────────── */
+    .proof {
+      padding: 36px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .proof__inner {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .proof__label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .proof__logos {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      flex-wrap: wrap;
+    }
+    .proof__logo-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.35;
+      filter: grayscale(1);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .proof__logo-pill svg { width: 20px; height: 20px; }
+    .proof__stat {
+      margin-left: auto;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      font-style: italic;
+      white-space: nowrap;
+    }
+    @media (max-width: 768px) { .proof__stat { display: none; } }
+
+    /* ──────────────────────────────────────────────
+       CAPABILITIES
+    ────────────────────────────────────────────── */
+    .caps__grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 56px;
+    }
+    .cap-card__icon {
+      width: 40px; height: 40px;
+      background: var(--accent-dim);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+    .cap-card__icon svg { width: 20px; height: 20px; }
+    .cap-card .h3 { margin-bottom: 10px; }
+    .cap-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+    @media (max-width: 900px) { .caps__grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .caps__grid { grid-template-columns: 1fr; } }
+
+    /* Section header */
+    .section-header { max-width: 560px; }
+    .section-header .muted { margin-top: 12px; font-size: 1.0625rem; }
+
+    /* ──────────────────────────────────────────────
+       MULTILINGUAL
+    ────────────────────────────────────────────── */
+    .multilang {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+    }
+    .multilang__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .lang-switcher {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 32px;
+    }
+    .lang-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      transition: background var(--transition), border-color var(--transition);
+      color: var(--text);
+    }
+    .lang-btn:hover, .lang-btn.active {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+    }
+    .lang-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .lang-btn__flag { font-size: 1.3rem; }
+    .lang-btn__info { display: flex; flex-direction: column; }
+    .lang-btn__name { font-size: 0.875rem; font-weight: 500; }
+    .lang-btn__phrase { font-size: 0.8125rem; color: var(--text-muted); }
+
+    .greeting-display {
+      text-align: center;
+    }
+    .greeting-display__text {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      transition: opacity 0.3s, transform 0.3s;
+      margin-bottom: 12px;
+    }
+    .greeting-display__sub {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .sarvam-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 24px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: var(--accent-dim);
+      border-radius: 999px;
+      padding: 4px 12px;
+    }
+    .sarvam-badge__dot {
+      width: 5px; height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+    @media (max-width: 768px) {
+      .multilang__inner { grid-template-columns: 1fr; gap: 40px; }
+    }
+
+    /* ──────────────────────────────────────────────
+       HOW IT WORKS
+    ────────────────────────────────────────────── */
+    .how__steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 64px;
+      position: relative;
+    }
+    .how__steps::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: calc(16.66% + 28px);
+      right: calc(16.66% + 28px);
+      height: 1px;
+      background: var(--border);
+    }
+    .how-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0 16px;
+    }
+    .how-step__num {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+    }
+    .how-step__title { font-weight: 600; font-size: 1rem; margin-bottom: 8px; }
+    .how-step__body { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; }
+    @media (max-width: 700px) {
+      .how__steps { grid-template-columns: 1fr; }
+      .how__steps::before { display: none; }
+    }
+
+    /* ──────────────────────────────────────────────
+       INTEGRATIONS
+    ────────────────────────────────────────────── */
+    .integrations__grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 48px;
+    }
+    .integration-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: border-color var(--transition), transform var(--transition);
+    }
+    .integration-pill:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .integration-pill svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .integrations__note {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    /* ──────────────────────────────────────────────
+       RESULTS
+    ────────────────────────────────────────────── */
+    .results {
+      background: var(--text);
+      color: var(--bg);
+    }
+    [data-theme="dark"] .results {
+      background: var(--bg-card);
+      color: var(--text);
+    }
+    .results__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 0;
+    }
+    .result-item {
+      text-align: center;
+      padding: 64px 32px;
+    }
+    .result-item__num {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .result-item__label {
+      font-size: 0.9375rem;
+      opacity: 0.6;
+    }
+    @media (max-width: 600px) {
+      .results__grid { grid-template-columns: 1fr; gap: 0; }
+      .result-item { padding: 40px 24px; }
+    }
+
+    /* ──────────────────────────────────────────────
+       TESTIMONIAL
+    ────────────────────────────────────────────── */
+    .testimonial__inner {
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .testimonial__quote {
+      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+      margin-bottom: 32px;
+    }
+    .testimonial__quote::before { content: '\201C'; }
+    .testimonial__quote::after  { content: '\201D'; }
+    .testimonial__author {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .testimonial__avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--accent-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--accent);
+    }
+    .testimonial__name { font-weight: 600; font-size: 0.9rem; }
+    .testimonial__role { font-size: 0.8125rem; color: var(--text-muted); }
+
+    /* ──────────────────────────────────────────────
+       FINAL CTA
+    ────────────────────────────────────────────── */
+    .final-cta {
+      background: var(--accent-dim);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .final-cta__inner { max-width: 520px; margin: 0 auto; text-align: center; }
+    .final-cta .h2 { margin-bottom: 16px; }
+    .final-cta .muted { margin-bottom: 36px; }
+    .email-form {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .email-input {
+      flex: 1;
+      min-width: 220px;
+      padding: 11px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9375rem;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    .email-input:focus { border-color: var(--accent); }
+    .email-input::placeholder { color: var(--text-muted); }
+
+    /* ──────────────────────────────────────────────
+       FOOTER
+    ────────────────────────────────────────────── */
+    .footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+    }
+    .footer__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer__links {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer__links a {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      transition: color var(--transition);
+    }
+    .footer__links a:hover { color: var(--text); }
+    .footer__social {
+      display: flex;
+      gap: 14px;
+    }
+    .footer__social a {
+      color: var(--text-muted);
+      transition: color var(--transition);
+    }
+    .footer__social a:hover { color: var(--text); }
+    .footer__social svg { width: 18px; height: 18px; }
+    .footer__copy {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+
+    /* ──────────────────────────────────────────────
+       SCROLL ANIMATIONS
+    ────────────────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-up { opacity: 1; transform: none; transition: none; }
+      .chat-bubble { animation: none; opacity: 1; transform: none; }
+      .waveform__bar { animation: none; }
+      .hero__eyebrow-dot { animation: none; }
+    }
+
+    /* ──────────────────────────────────────────────
+       DEMO MODAL
+    ────────────────────────────────────────────── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+      max-width: 480px;
+      width: 100%;
+      position: relative;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+    }
+    .modal__close {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 1.25rem;
+      line-height: 1;
+      padding: 4px;
+    }
+    .modal__title { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
+    .modal__sub { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 24px; }
+    .modal__field { margin-bottom: 16px; }
+    .modal__label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 6px; }
+    .modal__input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 0.9375rem;
+      font-family: var(--font);
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    .modal__input:focus { border-color: var(--accent); }
+    .modal__submit { width: 100%; padding: 13px; justify-content: center; margin-top: 8px; }
+    .modal__success { display: none; text-align: center; padding: 16px 0; }
+    .modal__success-icon { font-size: 2rem; margin-bottom: 12px; }
+
+    /* Audio player */
+    .audio-modal .modal__title { display: flex; align-items: center; gap: 10px; }
+    .audio-player {
+      margin-top: 24px;
+    }
+    .audio-transcript {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+    .audio-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .play-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      flex-shrink: 0;
+      transition: opacity var(--transition);
+    }
+    .play-btn:hover { opacity: 0.8; }
+    .play-btn svg { width: 18px; height: 18px; }
+    .audio-progress {
+      flex: 1;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .audio-progress__fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+    .audio-time { font-size: 0.8rem; color: var(--text-muted); min-width: 32px; text-align: right; }
+    .sarvam-note { margin-top: 16px; font-size: 0.75rem; color: var(--text-muted); }
+    .sarvam-note a { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       NAV
+  ══════════════════════════════════════════ -->
+  <header class="nav" id="nav" role="banner">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="#" class="nav__logo" aria-label="Sales Agent home">
+          <span class="nav__logo-dot" aria-hidden="true"></span>
+          Sales Agent
+        </a>
+        <nav class="nav__links" aria-label="Main navigation">
+          <a href="#capabilities">Product</a>
+          <a href="#how-it-works">How it works</a>
+          <a href="#integrations">Integrations</a>
+          <a href="#pricing">Pricing</a>
+        </nav>
+        <div class="nav__right">
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
+            <span id="themeIcon">☾</span>
+          </button>
+          <button class="btn btn-primary" onclick="openModal('demoModal')" aria-haspopup="dialog">Book a demo</button>
+          <button class="nav__mobile-toggle" id="mobileMenuToggle" aria-label="Open menu" aria-expanded="false">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ══════════════════════════════════════════
+         HERO
+    ══════════════════════════════════════════ -->
+    <section class="hero section" aria-labelledby="heroHeadline">
+      <div class="container">
+        <div class="hero__inner">
+          <div class="hero__copy">
+            <div class="hero__eyebrow" role="status" aria-label="Live AI agent">
+              <span class="hero__eyebrow-dot" aria-hidden="true"></span>
+              AI-powered outreach
+            </div>
+            <h1 class="display hero__headline" id="heroHeadline">
+              Every lead,<br />followed up.<br />Instantly.
+            </h1>
+            <p class="body-lg hero__sub muted">
+              Sales Agent calls, messages, and qualifies your leads around the clock — so your team only talks to the ones who are ready.
+            </p>
+            <div class="hero__ctas">
+              <button class="btn btn-primary" onclick="openModal('demoModal')">Book a demo</button>
+              <button class="btn btn-secondary" onclick="openModal('audioModal')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
+                </svg>
+                Hear a sample call
+              </button>
+            </div>
+          </div>
+
+          <!-- Animated chat/voice mockup -->
+          <div class="hero__mockup" aria-hidden="true">
+            <div class="chat-call-indicator">
+              <div class="waveform" aria-hidden="true">
+                <div class="waveform__bar"></div>
+                <div class="waveform__bar"></div>
+                <div class="waveform__bar"></div>
+                <div class="waveform__bar"></div>
+                <div class="waveform__bar"></div>
+                <div class="waveform__bar"></div>
+                <div class="waveform__bar"></div>
+                <div class="waveform__bar"></div>
+              </div>
+              <span>AI Agent · calling Priya S.</span>
+            </div>
+            <div class="chat-bubble chat-bubble--agent">
+              Hi Priya! I'm calling about the demo you requested. Do you have 2 minutes?
+            </div>
+            <div class="chat-bubble chat-bubble--user">
+              Yes, sure — but I'm a bit busy today.
+            </div>
+            <div class="chat-bubble chat-bubble--agent">
+              No worries! Can I schedule a quick call with our team for tomorrow at 11 AM?
+            </div>
+            <div class="chat-bubble chat-bubble--user">
+              11 AM works. Go ahead.
+            </div>
+            <div class="chat-bubble chat-bubble--agent">
+              Done! I've sent a calendar invite to your email. See you tomorrow ✓
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         SOCIAL PROOF STRIP
+    ══════════════════════════════════════════ -->
+    <div class="proof" aria-label="Trusted by companies">
+      <div class="container">
+        <div class="proof__inner">
+          <span class="proof__label">Trusted by</span>
+          <div class="proof__logos" role="list">
+            <div class="proof__logo-pill" role="listitem">
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect width="20" height="20" rx="4"/></svg>
+              <span>NovaTech</span>
+            </div>
+            <div class="proof__logo-pill" role="listitem">
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="10"/></svg>
+              <span>Meridian</span>
+            </div>
+            <div class="proof__logo-pill" role="listitem">
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><polygon points="10,0 20,20 0,20"/></svg>
+              <span>VantaCo</span>
+            </div>
+            <div class="proof__logo-pill" role="listitem">
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect width="20" height="20" rx="10"/></svg>
+              <span>LoopSales</span>
+            </div>
+            <div class="proof__logo-pill" role="listitem">
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M0 10 L10 0 L20 10 L10 20 Z"/></svg>
+              <span>SkyForge</span>
+            </div>
+          </div>
+          <p class="proof__stat">"We booked 3× more meetings in the first month."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         CAPABILITIES
+    ══════════════════════════════════════════ -->
+    <section class="section" id="capabilities" aria-labelledby="capsHeading">
+      <div class="container">
+        <div class="section-header fade-up">
+          <h2 class="h2" id="capsHeading">One agent. Everything it takes to close.</h2>
+          <p class="muted">From first contact to booked meeting — handled automatically, in any language.</p>
+        </div>
+        <div class="caps__grid" role="list">
+
+          <article class="card cap-card fade-up" role="listitem">
+            <div class="cap-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h3 class="h3">Lead Qualification</h3>
+            <p>Asks the right questions, scores intent, and routes only the warmest leads to your team.</p>
+          </article>
+
+          <article class="card cap-card fade-up" role="listitem">
+            <div class="cap-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <h3 class="h3">Reminders & Bookings</h3>
+            <p>Reminds prospects about upcoming calls and books meetings directly into your calendar.</p>
+          </article>
+
+          <article class="card cap-card fade-up" role="listitem">
+            <div class="cap-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+            </div>
+            <h3 class="h3">Follow-Ups</h3>
+            <p>Sends timely follow-up messages across WhatsApp, SMS, and email — no lead goes cold.</p>
+          </article>
+
+          <article class="card cap-card fade-up" role="listitem">
+            <div class="cap-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </div>
+            <h3 class="h3">Human Handoff</h3>
+            <p>Detects when a human is needed and transfers the conversation seamlessly — with full context.</p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         MULTILINGUAL (Sarvam Translate API demo)
+    ══════════════════════════════════════════ -->
+    <section class="section multilang" aria-labelledby="mlHeading">
+      <div class="container">
+        <div class="multilang__inner">
+          <div class="fade-up">
+            <h2 class="h2" id="mlHeading">Speaks your customer's language. Literally.</h2>
+            <p class="muted" style="margin-top:12px;">Sales Agent holds natural conversations in 10+ languages without losing nuance or tone.</p>
+            <div class="lang-switcher" role="listbox" aria-label="Select language">
+              <button class="lang-btn active" role="option" aria-selected="true" data-lang="en" data-greeting="Hello! I can help you book a meeting." data-native="English" onclick="switchLang(this)">
+                <span class="lang-btn__flag" aria-hidden="true">🇺🇸</span>
+                <span class="lang-btn__info">
+                  <span class="lang-btn__name">English</span>
+                  <span class="lang-btn__phrase">Hello! I can help you book a meeting.</span>
+                </span>
+              </button>
+              <button class="lang-btn" role="option" aria-selected="false" data-lang="hi" data-greeting="नमस्ते! मैं आपकी मीटिंग बुक करने में मदद कर सकता हूँ।" data-native="हिन्दी" onclick="switchLang(this)">
+                <span class="lang-btn__flag" aria-hidden="true">🇮🇳</span>
+                <span class="lang-btn__info">
+                  <span class="lang-btn__name">Hindi</span>
+                  <span class="lang-btn__phrase">नमस्ते! मैं आपकी मीटिंग बुक कर सकता हूँ।</span>
+                </span>
+              </button>
+              <button class="lang-btn" role="option" aria-selected="false" data-lang="es" data-greeting="¡Hola! Puedo ayudarte a reservar una reunión." data-native="Español" onclick="switchLang(this)">
+                <span class="lang-btn__flag" aria-hidden="true">🇪🇸</span>
+                <span class="lang-btn__info">
+                  <span class="lang-btn__name">Spanish</span>
+                  <span class="lang-btn__phrase">¡Hola! Puedo ayudarte a reservar.</span>
+                </span>
+              </button>
+              <button class="lang-btn" role="option" aria-selected="false" data-lang="ar" data-greeting="مرحباً! يمكنني مساعدتك في حجز اجتماع." data-native="العربية" onclick="switchLang(this)">
+                <span class="lang-btn__flag" aria-hidden="true">🇸🇦</span>
+                <span class="lang-btn__info">
+                  <span class="lang-btn__name">Arabic</span>
+                  <span class="lang-btn__phrase">مرحباً! يمكنني مساعدتك في حجز اجتماع.</span>
+                </span>
+              </button>
+              <button class="lang-btn" role="option" aria-selected="false" data-lang="ta" data-greeting="வணக்கம்! நான் உங்களுக்கு சந்திப்பை முன்பதிவு செய்ய உதவலாம்." data-native="தமிழ்" onclick="switchLang(this)">
+                <span class="lang-btn__flag" aria-hidden="true">🇮🇳</span>
+                <span class="lang-btn__info">
+                  <span class="lang-btn__name">Tamil</span>
+                  <span class="lang-btn__phrase">வணக்கம்! நான் உங்களுக்கு உதவலாம்.</span>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div class="greeting-display fade-up" aria-live="polite" aria-atomic="true">
+            <div class="greeting-display__text" id="greetingText">Hello! I can help you book a meeting.</div>
+            <div class="greeting-display__sub" id="greetingLang">English</div>
+            <div class="sarvam-badge">
+              <span class="sarvam-badge__dot" aria-hidden="true"></span>
+              Powered by Sarvam AI Translate
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         HOW IT WORKS
+    ══════════════════════════════════════════ -->
+    <section class="section" id="how-it-works" aria-labelledby="howHeading">
+      <div class="container center">
+        <div class="section-header fade-up" style="margin:0 auto;">
+          <h2 class="h2" id="howHeading">Up and running in minutes.</h2>
+          <p class="muted">Three steps from setup to your first automated outreach.</p>
+        </div>
+        <div class="how__steps" role="list">
+          <div class="how-step fade-up" role="listitem">
+            <div class="how-step__num" aria-hidden="true">01</div>
+            <p class="how-step__title">Connect your CRM</p>
+            <p class="how-step__body">Sync your contacts from Salesforce, HubSpot, or Zoho in one click. No CSV exports needed.</p>
+          </div>
+          <div class="how-step fade-up" role="listitem">
+            <div class="how-step__num" aria-hidden="true">02</div>
+            <p class="how-step__title">Set your goals & script</p>
+            <p class="how-step__body">Tell the agent who to reach, what to say, and when to hand off. Plain English — no code.</p>
+          </div>
+          <div class="how-step fade-up" role="listitem">
+            <div class="how-step__num" aria-hidden="true">03</div>
+            <p class="how-step__title">Agent reaches out</p>
+            <p class="how-step__body">Sales Agent calls and messages your leads, then writes outcomes back to your CRM automatically.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         INTEGRATIONS
+    ══════════════════════════════════════════ -->
+    <section class="section--tight" id="integrations" aria-labelledby="intHeading">
+      <div class="container center">
+        <h2 class="h2 fade-up" id="intHeading">Works with your stack.</h2>
+        <div class="integrations__grid fade-up" role="list">
+          <div class="integration-pill" role="listitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            Salesforce
+          </div>
+          <div class="integration-pill" role="listitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            HubSpot
+          </div>
+          <div class="integration-pill" role="listitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 4l16 0M4 12l16 0M4 20l16 0"/></svg>
+            Zoho CRM
+          </div>
+          <div class="integration-pill" role="listitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            Google Calendar
+          </div>
+          <div class="integration-pill" role="listitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 8l10 7 10-7"/></svg>
+            Outlook
+          </div>
+          <div class="integration-pill" role="listitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            WhatsApp
+          </div>
+          <div class="integration-pill" role="listitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.91v2.01z"/></svg>
+            SMS / Voice
+          </div>
+          <div class="integration-pill" role="listitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+            + More
+          </div>
+        </div>
+        <p class="integrations__note fade-up muted">Real-time two-way sync. Customer data stays up to date — automatically.</p>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         RESULTS
+    ══════════════════════════════════════════ -->
+    <section class="results section--tight" id="pricing" aria-labelledby="resultsHeading">
+      <h2 class="sr-only" id="resultsHeading">Results</h2>
+      <div class="results__grid" role="list">
+        <div class="result-item fade-up" role="listitem">
+          <div class="result-item__num">3×</div>
+          <div class="result-item__label">more booked meetings</div>
+        </div>
+        <div class="result-item fade-up" role="listitem">
+          <div class="result-item__num">24/7</div>
+          <div class="result-item__label">outreach coverage</div>
+        </div>
+        <div class="result-item fade-up" role="listitem">
+          <div class="result-item__num">&lt;5s</div>
+          <div class="result-item__label">response time</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         TESTIMONIAL
+    ══════════════════════════════════════════ -->
+    <section class="section" aria-labelledby="testimonialHeading">
+      <div class="container">
+        <h2 class="sr-only" id="testimonialHeading">Customer testimonial</h2>
+        <div class="testimonial__inner fade-up">
+          <blockquote>
+            <p class="testimonial__quote">
+              Our SDRs used to spend 60% of their day on cold follow-ups. Sales Agent does all of that now. The pipeline is fuller and the team is actually selling.
+            </p>
+            <footer class="testimonial__author">
+              <div class="testimonial__avatar" aria-hidden="true">AK</div>
+              <div>
+                <div class="testimonial__name">Arjun Kapoor</div>
+                <div class="testimonial__role muted">VP Sales, Meridian SaaS</div>
+              </div>
+            </footer>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         FINAL CTA
+    ══════════════════════════════════════════ -->
+    <section class="section final-cta" aria-labelledby="ctaHeading">
+      <div class="container">
+        <div class="final-cta__inner fade-up">
+          <h2 class="h2" id="ctaHeading">Start reaching more leads today.</h2>
+          <p class="muted">No long contracts. No big team required. Just better outreach.</p>
+          <form class="email-form" onsubmit="handleEmailSubmit(event)" novalidate>
+            <label for="ctaEmail" class="sr-only">Your work email</label>
+            <input
+              class="email-input"
+              type="email"
+              id="ctaEmail"
+              name="email"
+              placeholder="you@company.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Book a demo</button>
+          </form>
+          <p id="ctaFormMsg" style="margin-top:12px; font-size:0.875rem; color:var(--accent); display:none;" role="status">
+            ✓ Thanks! We'll be in touch shortly.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ══════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__inner">
+        <a href="#" class="nav__logo" aria-label="Sales Agent home">
+          <span class="nav__logo-dot" aria-hidden="true"></span>
+          Sales Agent
+        </a>
+        <nav class="footer__links" aria-label="Footer navigation">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Security</a>
+          <a href="#">Blog</a>
+          <a href="#">Careers</a>
+        </nav>
+        <div class="footer__social" aria-label="Social media links">
+          <a href="#" aria-label="Twitter / X">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="#" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+        </div>
+        <p class="footer__copy">© 2024 Sales Agent. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════════
+       DEMO BOOKING MODAL
+  ══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="demoModal" role="dialog" aria-modal="true" aria-labelledby="demoModalTitle" onclick="closeModalOnOverlay(event, 'demoModal')">
+    <div class="modal">
+      <button class="modal__close" onclick="closeModal('demoModal')" aria-label="Close dialog">×</button>
+      <div id="demoFormContent">
+        <h2 class="modal__title" id="demoModalTitle">Book a demo</h2>
+        <p class="modal__sub">We'll show you how Sales Agent works with your exact use case. Takes 30 minutes.</p>
+        <form onsubmit="handleDemoSubmit(event)" novalidate>
+          <div class="modal__field">
+            <label class="modal__label" for="demoName">Name</label>
+            <input class="modal__input" type="text" id="demoName" placeholder="Priya Sharma" required autocomplete="name" />
+          </div>
+          <div class="modal__field">
+            <label class="modal__label" for="demoEmail">Work email</label>
+            <input class="modal__input" type="email" id="demoEmail" placeholder="priya@company.com" required autocomplete="email" />
+          </div>
+          <div class="modal__field">
+            <label class="modal__label" for="demoCompany">Company</label>
+            <input class="modal__input" type="text" id="demoCompany" placeholder="Meridian SaaS" autocomplete="organization" />
+          </div>
+          <button type="submit" class="btn btn-primary modal__submit">Book my demo →</button>
+        </form>
+      </div>
+      <div class="modal__success" id="demoSuccess" role="status">
+        <div class="modal__success-icon">✓</div>
+        <p class="h3">You're booked!</p>
+        <p class="muted" style="margin-top:8px;">We'll send a calendar invite to your email shortly.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       AUDIO / SAMPLE CALL MODAL
+  ══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="audioModal" role="dialog" aria-modal="true" aria-labelledby="audioModalTitle" onclick="closeModalOnOverlay(event, 'audioModal')">
+    <div class="modal audio-modal">
+      <button class="modal__close" onclick="closeModal('audioModal')" aria-label="Close dialog">×</button>
+      <h2 class="modal__title" id="audioModalTitle">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.91v2.01z"/>
+        </svg>
+        Sample outreach call
+      </h2>
+      <p class="modal__sub">A simulated conversation showing how Sales Agent qualifies an inbound lead.</p>
+      <div class="audio-player">
+        <div class="audio-transcript">
+          <strong>Agent:</strong> "Hi Priya, this is Sara from Sales Agent. You requested a demo earlier — do you have 2 minutes to chat?"<br/><br/>
+          <strong>Priya:</strong> "Sure, but I'm evaluating a few tools."<br/><br/>
+          <strong>Agent:</strong> "Totally fair. What matters most to you — speed of setup, or the number of integrations?"<br/><br/>
+          <strong>Priya:</strong> "Integrations, for sure. We use HubSpot."<br/><br/>
+          <strong>Agent:</strong> "Great — we have a native HubSpot sync. Let me book you a 20-minute call with our team. Would Thursday at 2 PM work?"
+        </div>
+        <div class="audio-controls">
+          <button class="play-btn" id="playBtn" onclick="togglePlay()" aria-label="Play sample call">
+            <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </button>
+          <div class="audio-progress" role="progressbar" aria-label="Audio progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBar">
+            <div class="audio-progress__fill" id="progressFill"></div>
+          </div>
+          <span class="audio-time" id="audioTime">0:00</span>
+        </div>
+        <p class="sarvam-note">
+          This simulated transcript would be voiced by <a href="https://docs.sarvam.ai" target="_blank" rel="noopener">Sarvam AI's Bulbul TTS</a> in production — supporting Hindi, Tamil, Telugu, and 8 more Indian languages.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen-reader only utility -->
+  <style>.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }</style>
+
+  <script>
+    /* ══════════════════════════════════════════
+       THEME TOGGLE
+    ══════════════════════════════════════════ */
+    const html = document.documentElement;
+    const themeIcon = document.getElementById('themeIcon');
+
+    function setTheme(dark) {
+      html.setAttribute('data-theme', dark ? 'dark' : 'light');
+      themeIcon.textContent = dark ? '☀' : '☾';
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    }
+
+    // Respect OS preference, then localStorage
+    const saved = localStorage.getItem('theme');
+    if (saved) {
+      setTheme(saved === 'dark');
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme(true);
+    }
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      setTheme(html.getAttribute('data-theme') !== 'dark');
+    });
+
+    /* ══════════════════════════════════════════
+       NAV SCROLL BEHAVIOUR
+    ══════════════════════════════════════════ */
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 12);
+    }, { passive: true });
+
+    /* ══════════════════════════════════════════
+       SCROLL ANIMATIONS
+    ══════════════════════════════════════════ */
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((e, i) => {
+          if (e.isIntersecting) {
+            // Stagger siblings
+            const siblings = e.target.parentElement.querySelectorAll('.fade-up');
+            let delay = 0;
+            siblings.forEach((s, idx) => { if (s === e.target) delay = idx * 80; });
+            setTimeout(() => e.target.classList.add('visible'), delay);
+            observer.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    } else {
+      // Fallback: show everything
+      document.querySelectorAll('.fade-up').forEach(el => el.classList.add('visible'));
+    }
+
+    /* ══════════════════════════════════════════
+       LANGUAGE SWITCHER
+    ══════════════════════════════════════════ */
+    function switchLang(btn) {
+      // Update buttons
+      document.querySelectorAll('.lang-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+
+      // Update display with fade
+      const display = document.getElementById('greetingText');
+      const sub = document.getElementById('greetingLang');
+      display.style.opacity = '0';
+      display.style.transform = 'translateY(8px)';
+      setTimeout(() => {
+        display.textContent = btn.dataset.greeting;
+        sub.textContent = btn.dataset.native;
+        display.style.transition = 'opacity 0.35s, transform 0.35s';
+        display.style.opacity = '1';
+        display.style.transform = 'none';
+      }, 200);
+    }
+
+    /* ══════════════════════════════════════════
+       MODALS
+    ══════════════════════════════════════════ */
+    function openModal(id) {
+      const overlay = document.getElementById(id);
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      // Focus first focusable element
+      const first = overlay.querySelector('button, input, [tabindex]');
+      if (first) setTimeout(() => first.focus(), 50);
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function closeModalOnOverlay(e, id) {
+      if (e.target === e.currentTarget) closeModal(id);
+    }
+
+    // Close on Escape
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.open').forEach(m => {
+          closeModal(m.id);
+        });
+      }
+    });
+
+    /* ══════════════════════════════════════════
+       DEMO FORM SUBMIT
+    ══════════════════════════════════════════ */
+    function handleDemoSubmit(e) {
+      e.preventDefault();
+      document.getElementById('demoFormContent').style.display = 'none';
+      document.getElementById('demoSuccess').style.display = 'block';
+    }
+
+    /* ══════════════════════════════════════════
+       CTA EMAIL FORM
+    ══════════════════════════════════════════ */
+    function handleEmailSubmit(e) {
+      e.preventDefault();
+      const msg = document.getElementById('ctaFormMsg');
+      msg.style.display = 'block';
+      e.target.reset();
+    }
+
+    /* ══════════════════════════════════════════
+       SIMULATED AUDIO PLAYER
+       (In production this would play TTS audio
+        from Sarvam Bulbul API)
+    ══════════════════════════════════════════ */
+    let playing = false;
+    let progress = 0;
+    let timer = null;
+    const DURATION = 28; // simulated seconds
+
+    function togglePlay() {
+      playing = !playing;
+      const playIcon = document.getElementById('playIcon');
+      const btn = document.getElementById('playBtn');
+
+      if (playing) {
+        btn.setAttribute('aria-label', 'Pause sample call');
+        playIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+        runTimer();
+      } else {
+        btn.setAttribute('aria-label', 'Play sample call');
+        playIcon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
+        clearInterval(timer);
+      }
+    }
+
+    function runTimer() {
+      timer = setInterval(() => {
+        progress += 1;
+        const pct = Math.min((progress / DURATION) * 100, 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressBar').setAttribute('aria-valuenow', Math.round(pct));
+        const secs = Math.min(progress, DURATION);
+        document.getElementById('audioTime').textContent =
+          Math.floor(secs / 60) + ':' + String(secs % 60).padStart(2, '0');
+
+        if (progress >= DURATION) {
+          clearInterval(timer);
+          playing = false;
+          progress = 0;
+          document.getElementById('playIcon').innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
+          document.getElementById('playBtn').setAttribute('aria-label', 'Play sample call');
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
